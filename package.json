@@ -1,0 +1,29 @@
+{
+  "name": "sweet-celebration-cake",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --webpack",
+    "build": "next build",
+    "prestart": "npm run build",
+    "start": "serve -s out -l 3000",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@supabase/ssr": "^0.10.2",
+    "@supabase/supabase-js": "^2.104.0",
+    "animejs": "^3.2.2",
+    "leaflet": "^1.9.4",
+    "next": "16.1.7",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "babel-plugin-react-compiler": "1.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.7",
+    "serve": "^14.2.4",
+    "tailwindcss": "^4"
+  }
+}

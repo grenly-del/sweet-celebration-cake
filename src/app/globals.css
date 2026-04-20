@@ -1,0 +1,358 @@
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+@theme {
+  --color-pink-light: #FFF0F5;
+  --color-pink-default: #F8B4C8;
+  --color-pink-dark: #E91E8C;
+  --color-cream: #FFF5EE;
+  --color-rose: #E8A87C;
+  --color-gold: #D4A574;
+  --color-charcoal: #2D2D2D;
+  --color-pink-50: #FFF0F5;
+  --color-pink-100: #FFE4EF;
+  --color-pink-200: #F8B4C8;
+  --color-pink-300: #F09CB8;
+  --color-pink-400: #E882A6;
+  --color-pink-500: #E06B94;
+  --color-pink-600: #D45480;
+  --color-rose-light: #FDF2E9;
+  --color-rose-gold: #E8A87C;
+  --font-family-serif: 'Playfair Display', serif;
+  --font-family-sans: 'Poppins', sans-serif;
+}
+
+/* Base Styles */
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #ffffff;
+  color: #2D2D2D;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Playfair Display', serif;
+}
+
+/* Scroll Reveal - initial hidden state */
+.scroll-reveal {
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.scroll-reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+/* Product Card Hover Animation */
+.product-card {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.product-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 40px rgba(248, 180, 200, 0.25);
+}
+
+.product-card .product-image {
+  transition: transform 0.5s ease;
+}
+
+.product-card:hover .product-image {
+  transform: scale(1.08);
+}
+
+/* Badge Styles */
+.badge {
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+}
+
+.badge-popular {
+  background: linear-gradient(135deg, #F8B4C8, #E8A87C);
+  color: white;
+}
+
+.badge-new {
+  background: linear-gradient(135deg, #a78bfa, #818cf8);
+  color: white;
+}
+
+.badge-bestseller {
+  background: linear-gradient(135deg, #D4A574, #C49A6C);
+  color: white;
+}
+
+/* Toast Animation */
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOutRight {
+  from {
+    transform: translateX(0);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.toast-enter {
+  animation: slideInRight 0.3s ease forwards;
+}
+
+.toast-exit {
+  animation: slideOutRight 0.3s ease forwards;
+}
+
+/* Confetti animation */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-100vh) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  border-radius: 2px;
+  animation: confetti-fall linear infinite;
+  opacity: 0.8;
+}
+
+/* Glassmorphism Card */
+.glass-card {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Floating WhatsApp */
+.whatsapp-float {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 1000;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: #25D366;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 20px rgba(37, 211, 102, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.whatsapp-float:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 30px rgba(37, 211, 102, 0.5);
+}
+
+/* Star Rating */
+.star {
+  color: #E0E0E0;
+}
+
+.star.filled {
+  color: #FFD700;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #FFF0F5;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #F8B4C8;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #E882A6;
+}
+
+/* Back to Top */
+.back-to-top {
+  position: fixed;
+  bottom: 96px;
+  right: 28px;
+  z-index: 999;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #F8B4C8, #E8A87C);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 15px rgba(248, 180, 200, 0.4);
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  cursor: pointer;
+  border: none;
+  font-size: 1.2rem;
+}
+
+.back-to-top:hover {
+  transform: translateY(-3px);
+}
+
+/* Cart Drawer Overlay */
+.cart-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1100;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.cart-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Cart Drawer */
+.cart-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 400px;
+  max-width: 90vw;
+  background: white;
+  z-index: 1200;
+  transform: translateX(100%);
+  transition: transform 0.3s ease;
+  overflow-y: auto;
+  box-shadow: -10px 0 40px rgba(0, 0, 0, 0.15);
+}
+
+.cart-drawer.open {
+  transform: translateX(0);
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+
+.modal-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 16px;
+  max-width: 800px;
+  width: 90vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  transform: translateY(30px) scale(0.95);
+  transition: transform 0.3s ease;
+}
+
+.modal-overlay.open .modal-content {
+  transform: translateY(0) scale(1);
+}
+
+/* Navbar transparent on scroll */
+.navbar {
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, backdrop-filter 0.3s ease;
+}
+
+.navbar.scrolled {
+  background-color: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(248, 180, 200, 0.15);
+}
+
+/* Hamburger menu animation */
+.hamburger-line {
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+/* Gradient text */
+.gradient-text {
+  background: linear-gradient(135deg, #F8B4C8, #E8A87C);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Price category badges in catalog */
+.category-pill {
+  transition: all 0.3s ease;
+}
+
+.category-pill.active {
+  background: linear-gradient(135deg, #F8B4C8, #E8A87C);
+  color: white;
+  border-color: transparent;
+}
+
+/* Testimonial card */
+.testimonial-card {
+  transition: transform 0.3s ease;
+}
+
+.testimonial-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Hero text stagger (anime.js controlled) */
+.hero-title .char {
+  display: inline-block;
+  opacity: 0;
+}
+
+/* Section divider */
+.section-divider {
+  width: 60px;
+  height: 3px;
+  background: linear-gradient(135deg, #F8B4C8, #E8A87C);
+  margin: 0 auto;
+  border-radius: 2px;
+}
+
+.leaflet-container {
+  font-family: 'Poppins', sans-serif;
+}
