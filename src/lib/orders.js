@@ -40,7 +40,7 @@ export function buildWhatsAppMessage(customer, items, total) {
   const coordinatesText = getCoordinatesText(customer.locationLat, customer.locationLng);
   const mapsLink = customer.locationLink || buildMapsLink(customer.locationLat, customer.locationLng);
   const locationLines = [
-    customer.address ? `Detail alamat: ${customer.address}` : '',
+    customer.address ? `Alamat: ${customer.address}` : '',
     coordinatesText ? `Koordinat: ${coordinatesText}` : '',
     mapsLink ? `Link Maps: ${mapsLink}` : '',
     customer.notes ? `Catatan: ${customer.notes}` : '',

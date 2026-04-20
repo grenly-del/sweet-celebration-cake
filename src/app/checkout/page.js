@@ -171,25 +171,28 @@ export default function CheckoutPage() {
                       />
                     </div>
 
-                    <LocationPicker
-                      value={{
-                        latitude: customer.locationLat,
-                        longitude: customer.locationLng,
-                        mapLink: customer.locationLink,
-                      }}
-                      onChange={handleLocationChange}
-                      title="Lokasi Pengiriman *"
-                      helperText="Klik peta untuk menaruh pin alamat pengiriman. Koordinat akan disimpan dan link Maps akan ikut dikirim ke WhatsApp."
-                    />
+                    <div>
+                      <LocationPicker
+                        value={{
+                          latitude: customer.locationLat,
+                          longitude: customer.locationLng,
+                          mapLink: customer.locationLink,
+                        }}
+                        onChange={handleLocationChange}
+                        title="Lokasi Pengiriman *"
+                        helperText="Pilih titik lokasi di peta agar koordinat dan link Maps ikut tersimpan saat checkout dikirim."
+                      />
+                    </div>
 
                     <div>
-                      <label className="mb-2 block text-sm font-semibold text-charcoal">Detail Alamat (Opsional)</label>
+                      <label className="mb-2 block text-sm font-semibold text-charcoal">Alamat Lengkap *</label>
                       <textarea
                         name="address"
                         value={customer.address}
                         onChange={handleChange}
+                        required
                         rows={3}
-                        placeholder="Patokan rumah, nomor unit, warna pagar, dan detail lain jika perlu."
+                        placeholder="Patokan alamat, nomor rumah, warna pagar, atau detail tambahan lainnya."
                         className="w-full resize-none rounded-xl border border-pink-200 px-4 py-3 text-sm outline-none focus:border-pink-default focus:ring-2 focus:ring-pink-100"
                       />
                     </div>
