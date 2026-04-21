@@ -283,9 +283,55 @@ const wholeCakeProducts = [
     isBestSeller: false,
     sizes: wholeCakeStandardSizes,
   },
+  {
+    id: 16,
+    name: 'Red Velvet Rose Cream',
+    slug: 'red-velvet-rose-cream',
+    price: 210000,
+    image: '/images/products/other/red-velvet-1.jpg',
+    flavor: 'red velvet',
+    category: 'whole-cake',
+    description: 'Red velvet moist dengan cream cheese frosting lembut, sentuhan kelopak mawar kering, dan tampilan semi-naked yang elegan.',
+    isPopular: false,
+    isNew: true,
+    isBestSeller: false,
+    sizes: wholeCakeStandardSizes,
+  },
+  {
+    id: 17,
+    name: 'Red Velvet Berry Drip',
+    slug: 'red-velvet-berry-drip',
+    price: 235000,
+    image: '/images/products/other/red-velvet-2.jpg',
+    flavor: 'red velvet',
+    category: 'whole-cake',
+    description: 'Red velvet cake berlapis cream cheese dengan chocolate drip dan topping berry segar untuk perayaan yang lebih premium.',
+    isPopular: true,
+    isNew: false,
+    isBestSeller: false,
+    sizes: wholeCakeExclusiveSizes,
+  },
 ];
 
 const categoryProducts = [
+  {
+    id: 18,
+    name: 'Tiramisu Cream Slice',
+    slug: 'tiramisu-cream-slice',
+    price: 34000,
+    image: '/images/products/tiramisu-cream-slice.svg',
+    flavor: 'tiramisu',
+    metaLine: 'Tiramisu Coffee',
+    detailLabel: 'Rasa',
+    detailText: 'Krim kopi halus, cocoa dust, dan sponge lembut ala tiramisu',
+    optionTitle: 'Pilih Paket',
+    category: 'slice-cake',
+    description: 'Potongan tiramisu yang lembut, aromatik, dan cocok untuk pecinta kopi yang ingin porsi personal.',
+    isPopular: false,
+    isNew: true,
+    isBestSeller: false,
+    sizes: sliceCakeSizes,
+  },
     {
     id: 35,
     name: 'Elegant Spiral Candle Set',
@@ -699,7 +745,7 @@ const categoryProducts = [
   },
 ];
 
-export const products = [ ...categoryProducts];
+export const products = [...wholeCakeProducts, ...categoryProducts];
 
 export function formatPrice(price) {
   return new Intl.NumberFormat('id-ID', {
