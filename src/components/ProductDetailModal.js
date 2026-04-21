@@ -3,7 +3,11 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { useCart } from '@/context/CartContext';
-import { formatPrice } from '@/data/products';
+import {
+  formatPrice,
+  getCategoryLabel,
+  getFlavorLabel,
+} from '@/data/products';
 
 export default function ProductDetailModal({ product, onClose }) {
   const { addToCart } = useCart();
@@ -12,6 +16,9 @@ export default function ProductDetailModal({ product, onClose }) {
   if (!product) return null;
 
   const totalPrice = product.price + (selectedSize?.priceAdd || 0);
+  const detailLabel = product.detailLabel || 'Rasa';
+  const detailText = product.detailText || getFlavorLabel(product.flavor);
+  const optionTitle = product.optionTitle || 'Pilih Ukuran:';
 
   const handleAddToCart = () => {
     addToCart(product, selectedSize);
@@ -47,7 +54,7 @@ export default function ProductDetailModal({ product, onClose }) {
 
             {/* Category badge */}
             <span className="text-xs uppercase tracking-widest text-pink-default font-semibold mb-2">
-              {product.category}
+              {getCategoryLabel(product.category)}
             </span>
 
             <h2 className="font-serif text-2xl font-bold text-charcoal mb-2">
@@ -55,7 +62,7 @@ export default function ProductDetailModal({ product, onClose }) {
             </h2>
 
             <p className="text-xs text-charcoal/50 uppercase tracking-wider mb-4">
-              Rasa: {product.flavor}
+              {detailLabel}: {detailText}
             </p>
 
             <p className="text-sm text-charcoal/70 leading-relaxed mb-6">
@@ -64,7 +71,7 @@ export default function ProductDetailModal({ product, onClose }) {
 
             {/* Size Selection */}
             <div className="mb-6">
-              <p className="text-sm font-semibold text-charcoal mb-3">Pilih Ukuran:</p>
+              <p className="text-sm font-semibold text-charcoal mb-3">{optionTitle}</p>
               <div className="flex flex-wrap gap-2">
                 {product.sizes.map((size) => (
                   <button

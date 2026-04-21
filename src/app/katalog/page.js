@@ -1,7 +1,14 @@
 'use client';
 
-import { useState } from 'react';
-import { products, flavors, formatPrice } from '@/data/products';
+import { Suspense, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import {
+  categories,
+  flavors,
+  getCategoryLabel,
+  getFlavorLabel,
+  products,
+} from '@/data/products';
 import ProductCard from '@/components/ProductCard';
 import ProductDetailModal from '@/components/ProductDetailModal';
 import ScrollReveal from '@/components/ScrollReveal';
@@ -13,14 +20,9 @@ const sortOptions = [
   { value: 'name', label: 'Nama: A-Z' },
 ];
 
-const categoryFilters = [
-  { value: 'all', label: 'Semua' },
-  { value: 'signature', label: 'Signature' },
-  { value: 'premium', label: 'Premium' },
-  { value: 'exclusive', label: 'Exclusive' },
-];
-
-export default function KatalogPage() {
+function KatalogContent() {
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('search')?.trim() || '';
   const [selectedFlavor, setSelectedFlavor] = useState('all');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [sortBy, setSortBy] = useState('default');
@@ -29,91 +31,120 @@ export default function KatalogPage() {
 
   let filtered = [...products];
 
-  // Filter by flavor
   if (selectedFlavor !== 'all') {
-    filtered = filtered.filter((p) => p.flavor === selectedFlavor);
+    filtered = filtered.filter((product) => product.flavor === selectedFlavor);
   }
 
-  // Filter by category
   if (selectedCategory !== 'all') {
-    filtered = filtered.filter((p) => p.category === selectedCategory);
+    filtered = filtered.filter((product) => product.category === selectedCategory);
   }
 
-  // Sort
+  if (searchQuery) {
+    const normalizedSearchQuery = searchQuery.toLowerCase();
+    filtered = filtered.filter((product) => (
+      [
+        product.name,
+        product.description,
+        product.metaLine,
+        getFlavorLabel(product.flavor),
+        getCategoryLabel(product.category),
+      ]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase()
+        .includes(normalizedSearchQuery)
+    ));
+  }
+
   switch (sortBy) {
     case 'price-asc':
-      filtered.sort((a, b) => a.price - b.price);
+      filtered.sort((first, second) => first.price - second.price);
       break;
     case 'price-desc':
-      filtered.sort((a, b) => b.price - a.price);
+      filtered.sort((first, second) => second.price - first.price);
       break;
     case 'name':
-      filtered.sort((a, b) => a.name.localeCompare(b.name));
+      filtered.sort((first, second) => first.name.localeCompare(second.name));
       break;
   }
+
+  const visibleCategories = categories.filter((category) => (
+    category.value !== 'all'
+      && (selectedCategory === 'all' || selectedCategory === category.value)
+  ));
+
+  const groupedProducts = visibleCategories
+    .map((category) => ({
+      ...category,
+      items: filtered.filter((product) => product.category === category.value),
+    }))
+    .filter((category) => category.items.length > 0);
+
+  const totalProducts = groupedProducts.reduce(
+    (sum, category) => sum + category.items.length,
+    0
+  );
 
   return (
     <>
-      {/* Header */}
-      <section className="relative h-[300px] flex items-center justify-center overflow-hidden bg-gradient-to-b from-pink-light to-white">
-        <div className="text-center px-4">
-          <p className="text-xs uppercase tracking-[0.3em] text-pink-default font-semibold mb-2">
+      <section className="relative flex h-[300px] items-center justify-center overflow-hidden bg-gradient-to-b from-pink-light to-white">
+        <div className="px-4 text-center">
+          <p className="mb-2 text-xs font-semibold uppercase tracking-[0.3em] text-pink-default">
             Koleksi Kami
           </p>
-          <h1 className="font-serif text-4xl md:text-5xl font-bold text-charcoal mb-4">
-            Katalog Kue
+          <h1 className="mb-4 font-serif text-4xl font-bold text-charcoal md:text-5xl">
+            Katalog Celebration
           </h1>
-          <p className="text-charcoal/60 max-w-lg mx-auto">
-            Temukan kue ulang tahun sempurna untuk momen spesialmu. Dari Signature
-            hingga Exclusive, semuanya dibuat dengan cinta.
+          <p className="mx-auto max-w-2xl text-charcoal/60">
+            Katalog kini dibagi per kategori agar lebih mudah dipilih: Slice Cake,
+            Whole Cake, Dry Cake, dan Merchandise untuk pelengkap pesta.
           </p>
         </div>
       </section>
 
-      {/* Filters */}
-      <section className="py-8 bg-white border-b border-pink-50 sticky top-16 z-30 backdrop-blur-sm bg-white/95">
-        <div className="max-w-7xl mx-auto px-6">
-          {/* Category Pills */}
-          <div className="flex flex-wrap gap-2 mb-4">
-            {categoryFilters.map((cat) => (
+      <section className="sticky top-16 z-30 border-b border-pink-50 bg-white/95 py-8 backdrop-blur-sm">
+        <div className="mx-auto max-w-7xl px-6">
+          <div className="mb-4 flex flex-wrap gap-2">
+            {categories.map((category) => (
               <button
-                key={cat.value}
-                onClick={() => setSelectedCategory(cat.value)}
-                className={`category-pill px-5 py-2 rounded-full text-xs uppercase tracking-widest font-semibold border border-pink-200 transition-all ${
-                  selectedCategory === cat.value ? 'active' : 'text-charcoal/60 hover:border-pink-default'
+                key={category.value}
+                onClick={() => setSelectedCategory(category.value)}
+                className={`category-pill rounded-full border border-pink-200 px-5 py-2 text-xs font-semibold uppercase tracking-widest transition-all ${
+                  selectedCategory === category.value
+                    ? 'active'
+                    : 'text-charcoal/60 hover:border-pink-default'
                 }`}
               >
-                {cat.label}
+                {category.label}
               </button>
             ))}
           </div>
 
-          {/* Flavor filter + Sort */}
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex flex-wrap gap-2">
-              {flavors.map((f) => (
+              {flavors.map((flavor) => (
                 <button
-                  key={f.value}
-                  onClick={() => setSelectedFlavor(f.value)}
-                  className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all ${
-                    selectedFlavor === f.value
+                  key={flavor.value}
+                  onClick={() => setSelectedFlavor(flavor.value)}
+                  className={`rounded-full px-4 py-1.5 text-xs font-medium transition-all ${
+                    selectedFlavor === flavor.value
                       ? 'bg-charcoal text-white'
                       : 'bg-pink-light/50 text-charcoal/60 hover:bg-pink-light'
                   }`}
                 >
-                  {f.label}
+                  {flavor.label}
                 </button>
               ))}
             </div>
 
             <select
               value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="border border-pink-200 rounded-full px-4 py-2 text-xs text-charcoal/70 bg-white focus:outline-none focus:border-pink-default"
+              onChange={(event) => setSortBy(event.target.value)}
+              className="rounded-full border border-pink-200 bg-white px-4 py-2 text-xs text-charcoal/70 focus:border-pink-default focus:outline-none"
             >
-              {sortOptions.map((opt) => (
-                <option key={opt.value} value={opt.value}>
-                  {opt.label}
+              {sortOptions.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
                 </option>
               ))}
             </select>
@@ -121,44 +152,69 @@ export default function KatalogPage() {
         </div>
       </section>
 
-      {/* Products Grid */}
-      <section className="py-12 bg-white">
-        <div className="max-w-7xl mx-auto px-6">
-          {/* Results count */}
-          <p className="text-sm text-charcoal/50 mb-6">
-            Menampilkan <span className="font-semibold text-charcoal">{filtered.length}</span> produk
+      <section className="bg-white py-12">
+        <div className="mx-auto max-w-7xl px-6">
+          <p className="mb-6 text-sm text-charcoal/50">
+            Menampilkan <span className="font-semibold text-charcoal">{totalProducts}</span> produk
           </p>
 
-          {filtered.length === 0 ? (
-            <div className="text-center py-20">
-              <span className="text-5xl block mb-4">🎂</span>
-              <p className="text-charcoal/50 mb-2">Tidak ada produk yang cocok</p>
+          {searchQuery && (
+            <div className="mb-6 rounded-[24px] border border-pink-100 bg-[#fffaf8] px-5 py-4 text-sm text-charcoal/65">
+              Hasil pencarian untuk <span className="font-semibold text-charcoal">&quot;{searchQuery}&quot;</span>.
+            </div>
+          )}
+
+          {groupedProducts.length === 0 ? (
+            <div className="py-20 text-center">
+              <span className="mb-4 block text-5xl">Cake</span>
+              <p className="mb-2 text-charcoal/50">Tidak ada produk yang cocok</p>
               <button
                 onClick={() => {
                   setSelectedFlavor('all');
                   setSelectedCategory('all');
                 }}
-                className="text-pink-default text-sm font-semibold hover:underline"
+                className="text-sm font-semibold text-pink-default hover:underline"
               >
                 Reset Filter
               </button>
             </div>
           ) : (
-            <div key={animateKey} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {filtered.map((product, i) => (
-                <ScrollReveal key={product.id} delay={i * 80}>
-                  <ProductCard
-                    product={product}
-                    onQuickView={setSelectedProduct}
-                  />
-                </ScrollReveal>
+            <div key={animateKey} className="space-y-14">
+              {groupedProducts.map((category) => (
+                <div key={category.value}>
+                  <ScrollReveal>
+                    <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+                      <div>
+                        <p className="text-xs font-semibold uppercase tracking-[0.3em] text-pink-500">
+                          Kategori
+                        </p>
+                        <h2 className="mt-2 font-serif text-3xl font-bold text-charcoal">
+                          {category.label}
+                        </h2>
+                      </div>
+                      <p className="max-w-2xl text-sm leading-7 text-charcoal/60">
+                        {category.description}
+                      </p>
+                    </div>
+                  </ScrollReveal>
+
+                  <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                    {category.items.map((product, index) => (
+                      <ScrollReveal key={product.id} delay={index * 80}>
+                        <ProductCard
+                          product={product}
+                          onQuickView={setSelectedProduct}
+                        />
+                      </ScrollReveal>
+                    ))}
+                  </div>
+                </div>
               ))}
             </div>
           )}
         </div>
       </section>
 
-      {/* Product Detail Modal */}
       {selectedProduct && (
         <ProductDetailModal
           product={selectedProduct}
@@ -166,5 +222,13 @@ export default function KatalogPage() {
         />
       )}
     </>
+  );
+}
+
+export default function KatalogPage() {
+  return (
+    <Suspense fallback={<section className="bg-white py-20 text-center text-charcoal/60">Memuat katalog...</section>}>
+      <KatalogContent />
+    </Suspense>
   );
 }

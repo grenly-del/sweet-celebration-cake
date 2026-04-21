@@ -11,6 +11,7 @@ import Toast from '@/components/Toast';
 export default function ClientLayout({ children }) {
   const pathname = usePathname();
   const isAdminRoute = pathname?.startsWith('/admin');
+  const showFloatingWhatsApp = !pathname?.startsWith('/kontak');
 
   return (
     <CartProvider>
@@ -19,7 +20,7 @@ export default function ClientLayout({ children }) {
       {!isAdminRoute && (
         <>
           <Footer />
-          <FloatingWhatsApp />
+          {showFloatingWhatsApp && <FloatingWhatsApp />}
           <BackToTop />
           <Toast />
         </>

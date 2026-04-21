@@ -2,7 +2,11 @@
 
 import Image from 'next/image';
 import { useCart } from '@/context/CartContext';
-import { formatPrice } from '@/data/products';
+import {
+  formatPrice,
+  getCategoryLabel,
+  getFlavorLabel,
+} from '@/data/products';
 
 export default function ProductCard({ product, onQuickView }) {
   const { addToCart } = useCart();
@@ -14,14 +18,7 @@ export default function ProductCard({ product, onQuickView }) {
     return null;
   };
 
-  const getCategoryLabel = () => {
-    switch (product.category) {
-      case 'signature': return 'Signature';
-      case 'premium': return 'Premium';
-      case 'exclusive': return 'Exclusive';
-      default: return '';
-    }
-  };
+  const metaLine = product.metaLine || getFlavorLabel(product.flavor);
 
   return (
     <div className="product-card bg-white rounded-2xl overflow-hidden shadow-sm border border-pink-100/50 flex flex-col">
@@ -44,7 +41,7 @@ export default function ProductCard({ product, onQuickView }) {
         {/* Category label */}
         <div className="absolute top-3 right-3 z-10">
           <span className="text-[10px] uppercase tracking-widest font-semibold px-2 py-1 rounded-full bg-white/80 backdrop-blur-sm text-charcoal/70">
-            {getCategoryLabel()}
+            {getCategoryLabel(product.category)}
           </span>
         </div>
         {/* Hover overlay */}
@@ -65,7 +62,7 @@ export default function ProductCard({ product, onQuickView }) {
             {product.name}
           </h3>
           <p className="text-xs text-charcoal/50 uppercase tracking-wider mb-1">
-            {product.flavor}
+            {metaLine}
           </p>
           <p className="text-sm text-charcoal/60 line-clamp-2 mb-3">
             {product.description}

@@ -91,10 +91,15 @@ function createCustomCakeEntry(request) {
     customerCoordinates: getCoordinatesText(request.customer_location_lat, request.customer_location_lng),
     customerNotes: request.customer_notes || '',
     itemCount: 1,
-    totalAmount: 0,
+    totalAmount: request.estimated_price || 0,
     flavorLabel: request.flavor_label,
     sizeLabel: request.size_label,
     servingEstimate: request.serving_estimate,
+    fillingLabel: request.filling_label || '',
+    toppingLabel: request.topping_label || '',
+    designStyleLabel: request.design_style_label || '',
+    cakeMessage: request.cake_message || '',
+    inspirationName: request.inspiration_name || '',
     designImageUrl: request.design_image_url,
     designImageName: request.design_image_name,
     requestChannel: request.request_channel || 'website',
@@ -112,6 +117,12 @@ function createCustomCakeEntry(request) {
       request.size_value,
       request.size_label,
       request.serving_estimate,
+      request.filling_label,
+      request.topping_label,
+      request.design_style_label,
+      request.cake_message,
+      request.inspiration_name,
+      request.estimated_price,
       request.status,
       formatDashboardCode('custom_cake', request.id),
       request.design_image_name,
@@ -726,6 +737,38 @@ export default function AdminPage() {
                             {entry.customerNotes || 'Tidak ada catatan tambahan.'}
                           </p>
                         </div>
+
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-charcoal/45">
+                            Filling & Topping
+                          </p>
+                          <p className="mt-2 text-sm leading-7 text-charcoal/70">
+                            {entry.fillingLabel || 'Belum diisi'} - {entry.toppingLabel || 'Belum diisi'}
+                          </p>
+                        </div>
+
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-charcoal/45">
+                            Gaya Desain
+                          </p>
+                          <p className="mt-2 text-sm leading-7 text-charcoal/70">
+                            {entry.designStyleLabel || 'Belum diisi'}
+                          </p>
+                          {entry.inspirationName && (
+                            <p className="mt-2 text-xs font-medium text-charcoal/55">
+                              Inspirasi: {entry.inspirationName}
+                            </p>
+                          )}
+                        </div>
+
+                        <div>
+                          <p className="text-xs font-semibold uppercase tracking-[0.24em] text-charcoal/45">
+                            Tulisan di Kue
+                          </p>
+                          <p className="mt-2 text-sm leading-7 text-charcoal/70">
+                            {entry.cakeMessage || 'Tidak ada tulisan khusus.'}
+                          </p>
+                        </div>
                       </div>
 
                       <div className="rounded-[28px] border border-pink-100 p-5">
@@ -879,6 +922,15 @@ export default function AdminPage() {
                             Pelanggan tidak mengunggah gambar referensi.
                           </div>
                         )}
+
+                        <div className="mt-5 flex items-center justify-between border-t border-pink-100 pt-5">
+                          <p className="text-sm font-semibold uppercase tracking-[0.2em] text-charcoal/45">
+                            Estimasi Budget
+                          </p>
+                          <p className="font-serif text-3xl font-bold text-charcoal">
+                            {formatPrice(entry.totalAmount || 0)}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   )}

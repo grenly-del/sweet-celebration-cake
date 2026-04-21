@@ -44,6 +44,17 @@ create table if not exists public.custom_cake_requests (
   size_value text not null,
   size_label text not null,
   serving_estimate text not null,
+  filling_value text,
+  filling_label text,
+  topping_value text,
+  topping_label text,
+  design_style_value text,
+  design_style_label text,
+  cake_message text,
+  estimated_price integer,
+  inspiration_category_value text,
+  inspiration_category_label text,
+  inspiration_name text,
   customer_notes text,
   design_image_path text,
   design_image_url text,
@@ -88,6 +99,39 @@ alter table public.custom_cake_requests
 
 alter table public.custom_cake_requests
   add column if not exists customer_location_link text;
+
+alter table public.custom_cake_requests
+  add column if not exists filling_value text;
+
+alter table public.custom_cake_requests
+  add column if not exists filling_label text;
+
+alter table public.custom_cake_requests
+  add column if not exists topping_value text;
+
+alter table public.custom_cake_requests
+  add column if not exists topping_label text;
+
+alter table public.custom_cake_requests
+  add column if not exists design_style_value text;
+
+alter table public.custom_cake_requests
+  add column if not exists design_style_label text;
+
+alter table public.custom_cake_requests
+  add column if not exists cake_message text;
+
+alter table public.custom_cake_requests
+  add column if not exists estimated_price integer;
+
+alter table public.custom_cake_requests
+  add column if not exists inspiration_category_value text;
+
+alter table public.custom_cake_requests
+  add column if not exists inspiration_category_label text;
+
+alter table public.custom_cake_requests
+  add column if not exists inspiration_name text;
 
 alter table public.admin_users enable row level security;
 alter table public.orders enable row level security;
